@@ -1,25 +1,34 @@
 import * as Phaser from "phaser";
 
+
 import starfieldUrl from "/assets/starfield.png";
+
 
 export default class Play extends Phaser.Scene {
   fire?: Phaser.Input.Keyboard.Key;
   left?: Phaser.Input.Keyboard.Key;
   right?: Phaser.Input.Keyboard.Key;
+  spawnY = 100;
+  spawnX = 400;
   ships: Phaser.GameObjects.Shape[] = [];
+
 
   starfield?: Phaser.GameObjects.TileSprite;
   spinner?: Phaser.GameObjects.Shape;
 
+
   moveSpeed = 1; // radians per millisecond
+
 
   constructor() {
     super("play");
   }
 
+
   preload() {
     this.load.image("starfield", starfieldUrl);
   }
+
 
   #addKey(
     name: keyof typeof Phaser.Input.Keyboard.KeyCodes,
@@ -27,11 +36,11 @@ export default class Play extends Phaser.Scene {
     return this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes[name]);
   }
 
+
   create() {
     this.fire = this.#addKey("F");
     this.left = this.#addKey("LEFT");
     this.right = this.#addKey("RIGHT");
-    
     this.starfield = this.add
       .tileSprite(
         0,
@@ -41,8 +50,14 @@ export default class Play extends Phaser.Scene {
         "starfield",
       )
       .setOrigin(0, 0);
-
-    this.spinner = this.add.rectangle(100, 100, 50, 50, 0x0ff0f0);
+    this.spinner = this.add.rectangle(
+      this.spawnY,
+      this.spawnX,
+      10,
+      10,
+      0x0ff0f0,
+    );
+    this.spawnBaddie();
   }
   spawnBaddie() {
     this.ships.push(
@@ -56,7 +71,11 @@ export default class Play extends Phaser.Scene {
     );
   }
 
+
   update(_timeMs: number, delta: number) {
+    this.ships.forEach((ship) => {
+      ship.x -= 3;
+    });
     this.starfield!.tilePositionX -= 4;
 
 
@@ -79,7 +98,7 @@ export default class Play extends Phaser.Scene {
           tween = tween;
         },
       });
-
     }
   }
 }
+
