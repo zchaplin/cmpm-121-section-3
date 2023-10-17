@@ -6,6 +6,7 @@ export default class Play extends Phaser.Scene {
   fire?: Phaser.Input.Keyboard.Key;
   left?: Phaser.Input.Keyboard.Key;
   right?: Phaser.Input.Keyboard.Key;
+  ships: Phaser.GameObjects.Shape[] = [];
 
   starfield?: Phaser.GameObjects.TileSprite;
   spinner?: Phaser.GameObjects.Shape;
@@ -30,7 +31,7 @@ export default class Play extends Phaser.Scene {
     this.fire = this.#addKey("F");
     this.left = this.#addKey("LEFT");
     this.right = this.#addKey("RIGHT");
-
+    
     this.starfield = this.add
       .tileSprite(
         0,
@@ -42,6 +43,17 @@ export default class Play extends Phaser.Scene {
       .setOrigin(0, 0);
 
     this.spinner = this.add.rectangle(100, 100, 50, 50, 0x0ff0f0);
+  }
+  spawnBaddie() {
+    this.ships.push(
+      this.add.rectangle(900, Math.random() * 400, 50, 50, 0xff0000),
+    );
+    setTimeout(
+      () => {
+        this.spawnBaddie();
+      },
+      Math.random() * 2500 + 200,
+    );
   }
 
   update(_timeMs: number, delta: number) {
